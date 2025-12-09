@@ -33,7 +33,11 @@ pub fn RightSide() -> impl IntoView {
                 style:text-align="center"
                 style:margin-bottom="10rem"
             >
-                <button on:click=move |_| set_count.set(count.get() + 1) >
+                <button
+                    on:click=move |_| set_count.set(count.get() + 1)
+                    class="no-double-tap-zoom"
+                    style:padding="2rem"
+                >
                     "Click here for fun: " {count}
                 </button>
                 <Show
@@ -42,7 +46,7 @@ pub fn RightSide() -> impl IntoView {
                 >
                     <p>"You can stop now. Thanks a lot for clicking."</p>
                     <p>"Here's your fun."</p>
-                    <iframe src="http://www.staggeringbeauty.com/" style="border: 1px inset #ddd" width={width.min(598)} height="598"></iframe>
+                    <iframe src="http://www.staggeringbeauty.com/" style="border: 1px inset #ddd" width={width.min(598) - 10} height="598"></iframe>
                 </Show>
             </div>
         </div>
