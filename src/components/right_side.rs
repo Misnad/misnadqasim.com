@@ -10,7 +10,7 @@ pub fn RightSide() -> impl IntoView {
     view! {
         <div class=("right-side", true)>
             <div class=("right-inside", true)>
-                <h1>"Recent works"</h1>
+                <h1>"This site is under construction"</h1>
                 <p>
                     "Lorem ipsum dolor sit, amet consectetur adipisicing \
                     elit. Cupiditate ducimus provident facilis odit nulla, \

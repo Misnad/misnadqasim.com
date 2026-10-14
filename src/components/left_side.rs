@@ -14,8 +14,8 @@ pub fn LeftSide() -> impl IntoView {
                 <p class="left-text">
                     "Hi! I'm Misnad. "
                     <span class="left-text light">
-                        "A programmer and student. I like playing with
-                        computer and exploring nature."
+                        "A programmer and student. I like tinkering with
+                        computers and exploring places."
                     </span>
                 </p>
                 <div class="left-bottom">
