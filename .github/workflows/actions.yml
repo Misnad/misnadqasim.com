@@ -47,8 +47,8 @@ jobs:
         # AND set <Router base="/repo"> in your Rust code.
         run: ./trunk build --release --public-url "/"
 
-      - name: Add /pdfs route entry point
-        run: mkdir -p dist/pdfs && cp dist/index.html dist/project01/index.html
+      - name: Add /project01 route entry point
+        run: mkdir -p dist/project01 && cp dist/index.html dist/project01/index.html
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
