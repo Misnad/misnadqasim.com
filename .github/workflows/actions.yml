@@ -6,12 +6,10 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write # for committing to gh-pages branch.
+  contents: read
   pages: write
   id-token: write
 
-# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
-# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
 concurrency:
   group: "pages"
   cancel-in-progress: false
@@ -27,9 +25,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4 # repo checkout
+      - uses: actions/checkout@v4
 
-      # Install Rust Nightly Toolchain, with Clippy & Rustfmt
       - name: Install nightly Rust
         uses: dtolnay/rust-toolchain@nightly
         with:
@@ -38,47 +35,32 @@ jobs:
       - name: Add WASM target
         run: rustup target add wasm32-unknown-unknown
 
-      - name: lint
-        run: cargo clippy & cargo fmt
+      - name: Cache Rust build
+        uses: Swatinem/rust-cache@v2
 
-      # If using tailwind...
-      # - name: Download and install tailwindcss binary
-      #   run: npm install -D tailwindcss && npx tailwindcss -i <INPUT/PATH.css> -o <OUTPUT/PATH.css>  # run tailwind
+      - name: Lint
+        run: cargo fmt --check && cargo clippy -- -D warnings
 
       - name: Download and install Trunk binary
         run: wget -qO- https://github.com/trunk-rs/trunk/releases/download/v0.20.1/trunk-x86_64-unknown-linux-gnu.tar.gz | tar -xzf-
 
       - name: Build with Trunk
-        # "${GITHUB_REPOSITORY#*/}" evaluates into the name of the repository
-        # using --public-url something will allow trunk to modify all the href paths like from favicon.ico to repo_name/favicon.ico .
-        # this is necessary for github pages where the site is deployed to username.github.io/repo_name and all files must be requested
-        # relatively as favicon.ico. if we skip public-url option, the href paths will instead request username.github.io/favicon.ico which
-        # will obviously return error 404 not found.
+        # For a custom domain (example.com) at the root, --public-url "/" is correct.
+        # For a project page (username.github.io/repo), use --public-url "/repo/"
+        # AND set <Router base="/repo"> in your Rust code.
         run: ./trunk build --release --public-url "/"
 
-      # Copy index.html to 404.html for SPA routing
-      # Will allow routing to work if client enters from any route
-      # - name: Copy index.html to 404.html
-      #   run: cp dist/index.html dist/404.html
-
-      # Deploy to gh-pages branch
-      # - name: Deploy 🚀
-      #   uses: JamesIves/github-pages-deploy-action@v4
-      #   with:
-      #     folder: dist
-
-      # Deploy with Github Static Pages
+      - name: Add /pdfs route entry point
+        run: mkdir -p dist/pdfs && cp dist/index.html dist/pdfs/index.html
 
       - name: Setup Pages
-        uses: actions/configure-pages@v4
+        uses: actions/configure-pages@v5
         with:
           enablement: true
-          # token:
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          # Upload dist dir
           path: "./dist"
 
       - name: Deploy to GitHub Pages 🚀
